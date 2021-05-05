@@ -1,0 +1,9 @@
+{
+    "name" : "Histogram using ChartJS",
+    "description" : "Histogram using ChartJS library",
+    "icon" : "extension",
+    "preview" : "chart.png",
+    "type" : "visualization",
+    "version": "0.1",
+    "author": "Giovanni Cuozzo"
+}
