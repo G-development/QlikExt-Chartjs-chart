@@ -7,7 +7,8 @@ define( [], function () {
     };
     
     var measures = {
-        uses: "measures"
+        uses: "measures",
+        min: 2
     };
 
     var sorting = {
@@ -18,20 +19,33 @@ define( [], function () {
     var myText = {
         ref: "prop.myText",
         type: "string",
-        label: "Insert text here",
+        label: "Insert text",
         expression: "optional"
+    }
+
+    //color-picker - error
+    var myColorPicker = {
+        label:"My color-picker",
+        component: "color-picker",
+        ref: "myColor",
+        type: "object",
+        defaultValue: {
+          color: "FAC748",
+          index: "-1"
+        }
     }
 
     //Appearance section
     var appearanceSection = {
         uses: "settings",
         items: {
-            //Header
-            Header: {
+            //Something panel
+            Something: {
                 type: "items",
-                label: "Header",
+                label: "Something",
                 items: {
-                    myTextBox: myText
+                    myText: myText,
+                    ColorPick: myColorPicker
                 }
             }
         }
@@ -45,7 +59,7 @@ define( [], function () {
             items: {
                 dimensions: dimensions,
                 measures: measures,
-                //sorting: sorting,
+                sorting: sorting,
                 appearancePanel: appearanceSection
             }
     };

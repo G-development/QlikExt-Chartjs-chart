@@ -2,70 +2,73 @@ define( [
     //here are the dependencies;
     'jquery',
     './properties',
+    './initial',
     './js/chart'
 ],
-function ( $, props, chart ) {
+function ( $, props, i, chart ) {
     'use strict';
 
     return {
 
         //def of layout-panels - ref to properties.js
         definition: props,
+        initialProperties: initial,
         
-        initialProperties: {
-            qHyperCubeDef: {
-                qDimensions: [],
-                qMeasures: [],
-                qInitialDataFetch: [
-                    {
-                        //Default of columns
-                        qHeight: 100,
-                        qWidth: 10
-                    }
-                ]
-            }
-            
-        },
-        
-
 
         //Paint resp.Rendering logic
         paint: function ( $element, layout ) {
 
             //Create hyperCube var
             var hc = layout.qHyperCube;
-            console.log( 'Data returned: ', hc );
+            console.log('Data returned:', hc);
 
-           
+            //Empty the element
+            $element.empty();
+
             // Create datasets
             //var dataValues = hc.qDataPages[0].qMatrix.map(function(d) { return { label: d[0].qText, x: d[0].qNum, y: d[1].qNum } })
-            var dataValues = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[1].qNum } })
-            console.log('dataValues: ', dataValues)
-            var dataVals = hc.qDataPages[0].qMeasures;
-            console.log(dataVals);
-
             var dataLabels = hc.qDataPages[0].qMatrix.map(function(d) { return d[0].qText; })
             console.log('dataLabels: ', dataLabels)
 
+            var dataValues1 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[1].qNum } })
+            console.log('dataValues1: ', dataValues1)
+            var dataValues2 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[2].qNum } })
+            console.log('dataValues2: ', dataValues2)
+
+            /*
+            var Dimensions = [], Measures = [];
+            for (var r = 0; r < hc.qDataPages[0].qMatrix.length; r++) { 
+                for (var c = 0; c < hc.qDataPages[0].qMatrix[r].length; c++) {
+                    if (hc.qDataPages[0].qMatrix[r][c].qNum == "NaN"){
+                        Dimensions.push(hc.qDataPages[0].qMatrix[r][c].qText);
+                    } else {
+                        Measures.push(hc.qDataPages[0].qMatrix[r][c].qNum);
+                    }
+                }
+            }
+
+            console.log("Dimensions:", Dimensions, "Measures:", Measures);
+            console.log(Measures);
+            */
+
             var datasets = [
                 {
-                label: "Boh",
-                borderColor: 'rgba(215,25,28,0.4)',
-                pointBackgroundColor: 'rgba(215,25,28,1)',
-                pointBorderColor: 'rgba(215,25,28,0.4)',
-                pointBorderWidth: 0,
-                pointRadius: 4,
-                pointHoverRadius: 4,
-                pointHoverBorderWidth: 1,
-                pointHoverBorderColor: 'rgba(0,0,0,0.2)',
-                pointHoverBackgroundColor: 'rgba(253,174,97,0.9)',
-                pointHitRadius:70,
-                backgroundColor: 'rgba(215,25,28,0.04)',
-                fill: 'origin',  // A bit pointless if only one measure
-                data: dataValues
+                    label: hc.qMeasureInfo[0].qFallbackTitle,
+                    backgroundColor: "#FAC748",
+                    fill: 'origin',     // A bit pointless if only one measure
+                    data: dataValues1
+                },
+                {
+                    label: hc.qMeasureInfo[1].qFallbackTitle,
+                    backgroundColor: "#5B8E7D",
+                    fill: 'origin',     // A bit pointless if only one measure
+                    data: dataValues2
                 }
             ];
+            
 
+
+            //CHART
             var canvas_id  = layout.qInfo.qId + "_chartjs_bar";
 
             //Get width and height of the element
@@ -76,7 +79,7 @@ function ( $, props, chart ) {
             var ctx = document.getElementById(canvas_id).getContext('2d');
             var myChart = new Chart(ctx, {
                 // The type of chart we want to create
-                type: 'line',
+                type: 'bar',
 
                 // The data for our dataset
                 data: {
@@ -86,8 +89,13 @@ function ( $, props, chart ) {
 
                 // Configuration options go here
                 options: {
-                                    legend: false
-                                }
+                    plugins: {
+                        legend: {
+                          position: 'top',
+                        },
+                    }
+                }
+                        
             });
 
             console.log ('--------- END ------------');
@@ -96,6 +104,3 @@ function ( $, props, chart ) {
         }
     }; 
 } );
-
-
-
