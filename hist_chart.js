@@ -20,7 +20,7 @@ function ( $, props, i, chart ) {
 
             //Create hyperCube var
             var hc = layout.qHyperCube;
-            console.log('Data returned:', hc);
+            //console.log('Data returned:', hc);
 
             //Empty the element
             $element.empty();
@@ -28,12 +28,8 @@ function ( $, props, i, chart ) {
             // Create datasets
             //var dataValues = hc.qDataPages[0].qMatrix.map(function(d) { return { label: d[0].qText, x: d[0].qNum, y: d[1].qNum } })
             var dataLabels = hc.qDataPages[0].qMatrix.map(function(d) { return d[0].qText; })
-            console.log('dataLabels: ', dataLabels)
-
             var dataValues1 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[1].qNum } })
-            console.log('dataValues1: ', dataValues1)
             var dataValues2 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[2].qNum } })
-            console.log('dataValues2: ', dataValues2)
 
             /*
             var Dimensions = [], Measures = [];
@@ -54,49 +50,79 @@ function ( $, props, i, chart ) {
             var datasets = [
                 {
                     label: hc.qMeasureInfo[0].qFallbackTitle,
-                    backgroundColor: "#FAC748",
-                    fill: 'origin',     // A bit pointless if only one measure
-                    data: dataValues1
+                    backgroundColor: layout.props.firstDataset.color,
+                    fill: 'origin',     
+                    data: dataValues1,
+                    stack: stackName
                 },
                 {
                     label: hc.qMeasureInfo[1].qFallbackTitle,
-                    backgroundColor: "#5B8E7D",
-                    fill: 'origin',     // A bit pointless if only one measure
-                    data: dataValues2
+                    backgroundColor: layout.props.secondDataset.color,
+                    fill: 'origin',
+                    data: dataValues2,
+                    stack: 'Stack 1'
                 }
             ];
-            
 
+             
+            //If props.stacked = true, then stack the bars, else don't
+            if (layout.props.stacked === true){
+                //Set Options -> Scales -> Stacked eq to true
+                //myChart.options.scales.x.stacked = true,  myChart.options.scales.y.stacked = true;
+                datasets[0].stack = 'Stack 0';
+                datasets[1].stack = 'Stack 0';
+            } else {
+                //Set Options -> Scales -> Stacked eq to false
+                //myChart.options.scales.x.stacked = false,  myChart.options.scales.y.stacked = false;
+                datasets[0].stack = 'Stack 0';
+                datasets[1].stack = 'Stack 1';
+            }
 
             //CHART
             var canvas_id  = layout.qInfo.qId + "_chartjs_bar";
-
             //Get width and height of the element
             var ext_width = $element.width(), ext_height = $element.height();
-
-            $element.html('<canvas id="'+canvas_id+'" width="'+ext_width+'" height="'+ext_height+'"></canvas>');  //<canvas id="myChart" width="100" height="50"></canvas>
-
+            $element.html('<canvas id="'+canvas_id+'" width="'+ext_width+'" height="'+ext_height+'"></canvas>');  
             var ctx = document.getElementById(canvas_id).getContext('2d');
             var myChart = new Chart(ctx, {
-                // The type of chart we want to create
+                // Chart TYPE
                 type: 'bar',
-
-                // The data for our dataset
+                
+                // Chart DATA
                 data: {
-                    labels: dataLabels,  	// labels: ["January", "February", "March", "April"],
-                    datasets: datasets		// datasets: [0, 10, 5, 2],
+                    //X AXIS
+                    labels: dataLabels,  	
+                    //Y AXIS
+                    datasets: datasets		
                 },
-
-                // Configuration options go here
+                
+                // Chart OPTIONS
                 options: {
                     plugins: {
                         legend: {
-                          position: 'top',
+                            position: 'top',
                         },
+                    },
+                    interaction: {
+                        intersect: false,
+                      },
+                    scales: {
+                        x: {
+                            stacked: false
+                        },
+                        y: {
+                          stacked: true
+                        }
                     }
                 }
-                        
+                
             });
+
+
+
+           
+            
+            
 
             console.log ('--------- END ------------');
 
@@ -104,3 +130,5 @@ function ( $, props, i, chart ) {
         }
     }; 
 } );
+
+var stackName = 'Stack 0'

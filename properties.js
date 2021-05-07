@@ -8,7 +8,7 @@ define( [], function () {
     
     var measures = {
         uses: "measures",
-        min: 2
+        min: 1
     };
 
     var sorting = {
@@ -16,38 +16,70 @@ define( [], function () {
     }
 
     //myText
+    /*
     var myText = {
         ref: "prop.myText",
         type: "string",
         label: "Insert text",
-        expression: "optional"
+        defaultValue: "#3C887E"
     }
+    */
 
-    //color-picker - error
-    var myColorPicker = {
-        label:"My color-picker",
+    //color-pickers
+    var colPick1 = {
+        label:"First dataset color",
         component: "color-picker",
-        ref: "myColor",
+        //dualOutput: true,
+        ref: "props.firstDataset",
         type: "object",
         defaultValue: {
-          color: "FAC748",
-          index: "-1"
+            index: "-1",
+            color: "#48E5C2"
         }
+    }
+    var colPick2 = {
+        label:"Second dataset color",
+        component: "color-picker",
+        //dualOutput: true,
+        ref: "props.secondDataset",
+        type: "object",
+        defaultValue: {
+            index: "-1",
+            color: "#4A8FE7"
+        }
+    }
+
+    var checkBox =  {
+        type: "boolean",
+        label: "Stacked",
+        ref: "props.stacked",
+        defaultValue: false
     }
 
     //Appearance section
     var appearanceSection = {
         uses: "settings",
         items: {
-            //Something panel
-            Something: {
+            //Colors panel
+            colors: {
                 type: "items",
-                label: "Something",
+                label: "Colors",
                 items: {
-                    myText: myText,
-                    ColorPick: myColorPicker
+                    //myText: myText,
+                    colPick1: colPick1,
+                    colPick2: colPick2
+                }
+            },
+            //settings panel
+            settings: {
+                type: "items",
+                label: "Settings",
+                items: {
+                    checkStacked: checkBox
                 }
             }
+
+
         }
 };
 
