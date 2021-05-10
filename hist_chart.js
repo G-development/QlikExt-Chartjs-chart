@@ -1,134 +1,101 @@
-define( [ 
+define([
     //here are the dependencies;
     'jquery',
     './properties',
     './initial',
     './js/chart'
 ],
-function ( $, props, i, chart ) {
-    'use strict';
+    function ($, props, i, chart) {
+        'use strict';
 
-    return {
+        return {
 
-        //def of layout-panels - ref to properties.js
-        definition: props,
-        initialProperties: initial,
-        
+            //def of layout-panels - ref to properties.js
+            definition: props,
+            initialProperties: initial,
 
-        //Paint resp.Rendering logic
-        paint: function ( $element, layout ) {
 
-            //Create hyperCube var
-            var hc = layout.qHyperCube;
-            //console.log('Data returned:', hc);
+            //Paint resp.Rendering logic
+            paint: function ($element, layout) {
+                //Create hyperCube var
+                var hc = layout.qHyperCube;
+                //console.log('Data returned:', hc);
 
-            //Empty the element
-            $element.empty();
+                //Empty the element
+                $element.empty();
 
-            // Create datasets
-            //var dataValues = hc.qDataPages[0].qMatrix.map(function(d) { return { label: d[0].qText, x: d[0].qNum, y: d[1].qNum } })
-            var dataLabels = hc.qDataPages[0].qMatrix.map(function(d) { return d[0].qText; })
-            var dataValues1 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[1].qNum } })
-            var dataValues2 = hc.qDataPages[0].qMatrix.map(function(d) { return { y: d[2].qNum } })
+                // Create datasets
+                var dataLabels = hc.qDataPages[0].qMatrix.map(function (d) { return d[0].qText; })
 
-            /*
-            var Dimensions = [], Measures = [];
-            for (var r = 0; r < hc.qDataPages[0].qMatrix.length; r++) { 
-                for (var c = 0; c < hc.qDataPages[0].qMatrix[r].length; c++) {
-                    if (hc.qDataPages[0].qMatrix[r][c].qNum == "NaN"){
-                        Dimensions.push(hc.qDataPages[0].qMatrix[r][c].qText);
-                    } else {
-                        Measures.push(hc.qDataPages[0].qMatrix[r][c].qNum);
+                var datasets = [];
+                var cols = new Array(layout.props.firstDataset.color, layout.props.secondDataset.color, layout.props.thirdDataset.color);
+                for (var i = 0; i < hc.qMeasureInfo.length; i++) {
+                    datasets.push(
+                        {
+                            label: hc.qMeasureInfo[i].qFallbackTitle,
+                            backgroundColor: cols[i],
+                            fill: 'origin',
+                            data: hc.qDataPages[0].qMatrix.map(function (d) { return { y: d[i + 1].qNum } }),
+                            stack: 'Stack' + i
+                        }
+                    )               
+                }
+
+
+                //If props.stacked = true, then stack the bars, else don't
+                if (layout.props.stacked === true) {
+                    for (let i = 0; i < hc.qMeasureInfo.length; i++) {
+                        datasets[i].stack = 'Uno';
+                    }
+                } else {
+                    for (let i = 0; i < hc.qMeasureInfo.length; i++) {
+                        datasets[i].stack = i;
                     }
                 }
-            }
 
-            console.log("Dimensions:", Dimensions, "Measures:", Measures);
-            console.log(Measures);
-            */
+                //CHART
+                var canvas_id = layout.qInfo.qId + "_chartjs_bar";
+                //Get width and height of the element
+                var ext_width = $element.width(), ext_height = $element.height();
+                $element.html('<canvas id="' + canvas_id + '" width="' + ext_width + '" height="' + ext_height + '"></canvas>');
+                var ctx = document.getElementById(canvas_id).getContext('2d');
 
-            var datasets = [
-                {
-                    label: hc.qMeasureInfo[0].qFallbackTitle,
-                    backgroundColor: layout.props.firstDataset.color,
-                    fill: 'origin',     
-                    data: dataValues1,
-                    stack: stackName
-                },
-                {
-                    label: hc.qMeasureInfo[1].qFallbackTitle,
-                    backgroundColor: layout.props.secondDataset.color,
-                    fill: 'origin',
-                    data: dataValues2,
-                    stack: 'Stack 1'
-                }
-            ];
+                var myChart = new Chart(ctx, {
+                    // Chart TYPE
+                    type: 'bar',
 
-             
-            //If props.stacked = true, then stack the bars, else don't
-            if (layout.props.stacked === true){
-                //Set Options -> Scales -> Stacked eq to true
-                //myChart.options.scales.x.stacked = true,  myChart.options.scales.y.stacked = true;
-                datasets[0].stack = 'Stack 0';
-                datasets[1].stack = 'Stack 0';
-            } else {
-                //Set Options -> Scales -> Stacked eq to false
-                //myChart.options.scales.x.stacked = false,  myChart.options.scales.y.stacked = false;
-                datasets[0].stack = 'Stack 0';
-                datasets[1].stack = 'Stack 1';
-            }
-
-            //CHART
-            var canvas_id  = layout.qInfo.qId + "_chartjs_bar";
-            //Get width and height of the element
-            var ext_width = $element.width(), ext_height = $element.height();
-            $element.html('<canvas id="'+canvas_id+'" width="'+ext_width+'" height="'+ext_height+'"></canvas>');  
-            var ctx = document.getElementById(canvas_id).getContext('2d');
-            var myChart = new Chart(ctx, {
-                // Chart TYPE
-                type: 'bar',
-                
-                // Chart DATA
-                data: {
-                    //X AXIS
-                    labels: dataLabels,  	
-                    //Y AXIS
-                    datasets: datasets		
-                },
-                
-                // Chart OPTIONS
-                options: {
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
+                    // Chart DATA
+                    data: {
+                        //X AXIS
+                        labels: dataLabels,
+                        //Y AXIS
+                        datasets: datasets
                     },
-                    interaction: {
-                        intersect: false,
-                      },
-                    scales: {
-                        x: {
-                            stacked: false
+
+                    // Chart OPTIONS
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
                         },
-                        y: {
-                          stacked: true
+                        interaction: {
+                            intersect: false,
+                        },
+                        scales: {
+                            x: {
+                                stacked: false
+                            },
+                            y: {
+                                stacked: true
+                            }
                         }
                     }
-                }
-                
-            });
+
+                });
 
 
-
-           
-            
-            
-
-            console.log ('--------- END ------------');
-
-
-        }
-    }; 
-} );
-
-var stackName = 'Stack 0'
+                console.log('------------ END ------------');
+            }
+        };
+    });
