@@ -1,9 +1,9 @@
 {
-    "name" : "Trying Histogram using ChartJS V3",
-    "description" : "Histogram using ChartJS library",
-    "icon" : "extension",
+    "name" : "Bar chart w/ChartJS",
+    "description" : "v0.3",
+    "icon" : "bar-chart-vertical",
     "preview" : "chart.png",
     "type" : "visualization",
-    "version": "0.2",
+    "version": "0.3",
     "author": "Giovanni Cuozzo"
 }
