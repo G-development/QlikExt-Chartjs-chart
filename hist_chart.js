@@ -1,3 +1,6 @@
+var legendPosition = 'top';
+var legendDisplay = true;
+
 define([
     //here are the dependencies;
     'jquery',
@@ -19,8 +22,6 @@ define([
             paint: function ($element, layout) {
                 //Create hyperCube var
                 var hc = layout.qHyperCube;
-                console.log("Layout:", layout);
-                console.log("Data returned:", hc);
 
                 //Empty the element
                 $element.empty();
@@ -45,7 +46,7 @@ define([
                 //If props.stacked = true then stack the bars, else don't
                 if (layout.props.stacked === true) {
                     for (let i = 0; i < hc.qMeasureInfo.length; i++) {
-                        datasets[i].stack = 'Uno';
+                        datasets[i].stack = 'One';
                     }
                 } else {
                     for (let i = 0; i < hc.qMeasureInfo.length; i++) {
@@ -58,7 +59,22 @@ define([
                     console.log(datasets[i].backgroundColor);
                 }
 
-
+                //If props.legend -> move the legend
+                if (layout.props.legend == "t") {
+                    legendDisplay = true;
+                    legendPosition = 'top';
+                } else if (layout.props.legend == "l") {
+                    legendDisplay = true;
+                    legendPosition = 'left';
+                } else if (layout.props.legend == "b") {
+                    legendDisplay = true;
+                    legendPosition = 'bottom';
+                } else if (layout.props.legend == "r")  {
+                    legendDisplay = true;
+                    legendPosition = 'right';
+                } else {
+                    legendDisplay = false;
+                }
 
                 //CHART
                 var canvas_id = layout.qInfo.qId + "_chartjs_bar";
@@ -81,11 +97,11 @@ define([
 
                     // Chart OPTIONS
                     options: {
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
+                        legend: {
+                            display: legendDisplay,
+                            position: legendPosition
                         },
+                        responsive: true,
                         interaction: {
                             intersect: false,
                         },
@@ -106,7 +122,7 @@ define([
                                     display: true
                                 }
                             }]
-                        }
+                        },
                     }
 
                 });
@@ -120,8 +136,8 @@ define([
                     myChart.options.scales.yAxes[0].gridLines.display = false;
                 }
 
-
                 console.log('------------ END ------------');
             }
         };
     });
+

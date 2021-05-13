@@ -101,10 +101,10 @@ define([
             ref: "props.grid",
             options: [{
                 value: true,
-                label: "On"
+                label: "ON"
             }, {
                 value: false,
-                label: "Off"
+                label: "OFF"
             }],
             defaultValue: true
         }
@@ -127,12 +127,47 @@ define([
         var randomizeBtn = {
             label: "Randomize colors",
             component: "button",
-            ref:"props.randBtn",
+            ref: "props.randBtn",
             action: function () {
-                for(var i=0; i<5; i++) {
-                    
+                for (var i = 0; i < 5; i++) {
+
                 }
             }
+        }
+
+        var legendBtn = {
+            type: "string",
+            component: "buttongroup",
+            label: "Legend positioning",
+            ref: "props.legend",
+            options: [
+                {
+                    value: "t",
+                    label: "⬆",
+                    tooltip: "Legend on top"
+                },
+                {
+                    value: "l",
+                    label: "⬅",
+                    tooltip: "Legend on left"
+                },
+                {
+                    value: "b",
+                    label: "⬇",
+                    tooltip: "Legend on bottom"
+                },
+                {
+                    value: "r",
+                    label: "➡",
+                    tooltip: "Legend on right"
+                },
+                {
+                    value: "h",
+                    label: "No",
+                    tooltip: "Hide legend"
+                }
+            ],
+            defaultValue: "t"
         }
 
         //Appearance section
@@ -157,7 +192,8 @@ define([
                     items: {
                         checkGrid: checkGrid,
                         checkStacked: checkStacked,
-                        randomizeBtn: randomizeBtn
+                        randomizeBtn: randomizeBtn,
+                        legendBtn: legendBtn
                     }
                 }
 
