@@ -1,5 +1,6 @@
 var legendPosition = 'top';
 var legendDisplay = true;
+var tooltipsDisplay = true;
 
 define([
     //here are the dependencies;
@@ -10,7 +11,7 @@ define([
 ],
     function ($, props) {
         'use strict';
-        var datasets = [];
+        var datasets = [], colors = [];
         return {
 
             //def of layout-panels - ref to properties.js / initial.js
@@ -29,11 +30,14 @@ define([
                 // Create datasets
                 var dataLabels = hc.qDataPages[0].qMatrix.map(function (d) { return d[0].qText; })
 
-                datasets = [];
-                var colors = new Array(layout.props.firstDataset.color, layout.props.secondDataset.color, layout.props.thirdDataset.color, layout.props.fourthDataset.color, layout.props.fifthDataset.color);
+                //var colors = new Array(layout.props.firstDataset.color, layout.props.secondDataset.color, layout.props.thirdDataset.color, layout.props.fourthDataset.color, layout.props.fifthDataset.color);
+                colors = [], datasets = [];
+
                 for (var i = 0; i < hc.qMeasureInfo.length; i++) {
+                    colors.push(layout.qHyperCube.qDataPages[0].qMatrix[0][i + 1].qAttrExps.qValues[0].qText);
                     datasets.push(
                         {
+                            //axis: 'y',
                             label: hc.qMeasureInfo[i].qFallbackTitle,
                             backgroundColor: colors[i],
                             fill: 'origin',
@@ -41,6 +45,21 @@ define([
                             stack: 'Stack' + i
                         }
                     )
+                }
+
+                //Get color values
+                for (var i = 0; i < hc.qMeasureInfo.length; i++) {
+                    console.log(layout.qHyperCube.qDataPages[0].qMatrix[0][i + 1].qAttrExps.qValues[0].qText);
+                }
+
+                //Colors opacity
+                if (layout.props.colSlider == '0.5') {
+                    console.log("If sì");
+                    for (var i = 0; i < hc.qMeasureInfo.length; i++) {
+                        var str = datasets[i].backgroundColor;
+                        str = str.replace(/[^,]+(?=\))/, '1');
+                        console.log(str);
+                    }
                 }
 
                 //If props.stacked = true then stack the bars, else don't
@@ -52,6 +71,13 @@ define([
                     for (let i = 0; i < hc.qMeasureInfo.length; i++) {
                         datasets[i].stack = i;
                     }
+                }
+
+                //if props.tooltips = true then show tooltips, else don't show
+                if (layout.props.tooltips === true) {
+                    tooltipsDisplay = true;
+                } else {
+                    tooltipsDisplay = false;
                 }
 
                 //If props.randBtn is clicked, randomize colors
@@ -69,7 +95,7 @@ define([
                 } else if (layout.props.legend == "b") {
                     legendDisplay = true;
                     legendPosition = 'bottom';
-                } else if (layout.props.legend == "r")  {
+                } else if (layout.props.legend == "r") {
                     legendDisplay = true;
                     legendPosition = 'right';
                 } else {
@@ -99,29 +125,27 @@ define([
                     options: {
                         legend: {
                             display: legendDisplay,
-                            position: legendPosition
+                            position: legendPosition,
                         },
                         responsive: true,
-                        interaction: {
-                            intersect: false,
+                        tooltips: {
+                            enabled: tooltipsDisplay
                         },
+                        /*interaction: {
+                            intersect: false,
+                        },*/
                         scales: {
-                            x: {
-                                stacked: false
-                            },
-                            y: {
-                                stacked: true
-                            },
-                            xAxes: [{
+                            indexAxis: 'y',
+                            xAxes: {
                                 gridLines: {
                                     display: true
                                 }
-                            }],
-                            yAxes: [{
+                            },
+                            yAxes: {
                                 gridLines: {
                                     display: true
                                 }
-                            }]
+                            }
                         },
                     }
 

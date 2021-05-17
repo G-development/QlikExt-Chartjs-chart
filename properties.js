@@ -1,3 +1,9 @@
+/*function getRandomColor() {
+    var r = () => Math.random() * 256 >> 0;
+    var color = `rgba(${r()}, ${r()}, ${r()}, 0.6)`;
+    return color;
+}*/
+
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -7,9 +13,8 @@ function getRandomColor() {
     return color;
 }
 
-define([
-    './hist_chart'
-],
+
+define([],
     function () {
         'use strict';
 
@@ -23,7 +28,17 @@ define([
         var measures = {
             uses: "measures",
             min: 1,
-            max: 5
+            max: 5,
+            items: {
+                colorazioneMisure: {
+                    type: "string",
+                    ref: "qAttributeExpressions.0.qExpression",
+                    label: "Colorazione",
+                    component: "expression",
+                    expression: "always",
+                    defaultValue: "='" + getRandomColor() + "'"
+                },
+            }
         };
 
         var sorting = {
@@ -40,7 +55,7 @@ define([
         }
         */
 
-        //color-pickers
+        //Colors
         var colorPicks = [
             {
                 label: "First dataset color",
@@ -94,6 +109,29 @@ define([
             }
         ]
 
+        var colorSlider = {
+            type: "number",
+            component: "slider",
+            label: "Colors opacity",
+            ref: "props.colSlider",
+            min: 0,
+            max: 1,
+            step: 0.1,
+            defaultValue: 0.5
+        }
+
+        var randomizeBtn = {
+            label: "Randomize colors",
+            component: "button",
+            ref: "props.randBtn",
+            action: function () {
+                for (var i = 0; i < 5; i++) {
+
+                }
+            }
+        }
+
+        //Grid
         var checkGrid = {
             type: "boolean",
             component: "switch",
@@ -108,7 +146,8 @@ define([
             }],
             defaultValue: true
         }
-
+         
+        //Stack bars
         var checkStacked = {
             type: "boolean",
             component: "switch",
@@ -124,17 +163,23 @@ define([
             defaultValue: false
         }
 
-        var randomizeBtn = {
-            label: "Randomize colors",
-            component: "button",
-            ref: "props.randBtn",
-            action: function () {
-                for (var i = 0; i < 5; i++) {
-
-                }
-            }
+        //Tooltips
+        var checkTooltips = {
+            type: "boolean",
+            component: "switch",
+            label: "Tooltips",
+            ref: "props.tooltips",
+            options: [{
+                value: true,
+                label: "Show"
+            }, {
+                value: false,
+                label: "Hide"
+            }],
+            defaultValue: true
         }
 
+        //Legend
         var legendBtn = {
             type: "string",
             component: "buttongroup",
@@ -179,6 +224,7 @@ define([
                     type: "items",
                     label: "Colors",
                     items: {
+                        colorSlider: colorSlider
                         //myText: myText,
                         //cP1: colorPicks[0],
                         //cP2: colorPicks[1],
@@ -192,8 +238,9 @@ define([
                     items: {
                         checkGrid: checkGrid,
                         checkStacked: checkStacked,
+                        checkTooltips: checkTooltips,
                         randomizeBtn: randomizeBtn,
-                        legendBtn: legendBtn
+                        legendBtn: legendBtn,
                     }
                 }
 
